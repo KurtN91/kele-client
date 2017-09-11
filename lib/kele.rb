@@ -34,5 +34,19 @@ class Kele
         response = self.class.get(@base_uri, headers: { "authorization" => @auth_token }, body: {id: @id})
         return JSON.parse(response)
     end
+    
+    def get_messages (page_number)
+        @page_number = page_number
+        response = self.class.get(@base_uri, headers: { "authorization" => @auth_token}, body: {page: @page_number})
+        return JSON.parse(response)
+    end
+    
+    def create_message (subject, stripped_text, token)
+        @token = token
+        @subject = subject
+        @stripped_text = stripped_text
+        response = self.class.post(@base_uri, headers: {"authorization" => @auth_token}, body: {sender: @email, recipient_id: @id, token: @token, subject: @subject, stripped_text: @stripped_text})
+        return response
+    end
 
 end
