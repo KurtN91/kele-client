@@ -14,6 +14,7 @@ class Kele
     def initialize (email, password)
         @base_uri =  'https://www.bloc.io/api/v1'
         response = Kele.post("#{@base_uri}/sessions", body: {email: @email, password: @password})
+        @enrollment_id = response["enrollment_id"]
         puts response
         if response && response["auth_token"] 
             @auth_token = response["auth_token"]
@@ -47,6 +48,16 @@ class Kele
         @stripped_text = stripped_text
         response = self.class.post(@base_uri, headers: {"authorization" => @auth_token}, body: {sender: @email, recipient_id: @id, token: @token, subject: @subject, stripped_text: @stripped_text})
         return response
+    end
+    
+    def create_submission (checkpoint_id, assignment_branch, assignment_commit_link, comment)
+        @checkpoint_id = checkpoint_id
+        @assignment_branch = assignment_branch
+        @assignment_commit_link = assignment_commit_link
+        @comment = comment 
+        response = self.class.post(@base_uri, headers: {"authorization" => @auth_token}, body: {assignment_branch: @assignment_branch, assignment_commit_link: @assignment_commit_link, checkpoint_id: @checkpoint_id, comment: @comment, enrollment_id: @enrollment_id})
+        return response
+        
     end
 
 end
